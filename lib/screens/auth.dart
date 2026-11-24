@@ -6,57 +6,79 @@ import 'shell.dart';
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
+  // เปลี่ยนลิงก์รูปพื้นหลังได้ที่นี่
+  static const _bgUrl =
+      'https://i.pinimg.com/170x/07/03/50/07035050a8521b10195896a5d4c93deb.jpg';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        // TODO: แทนด้วยภาพพื้นหลังยิม: DecorationImage(image: AssetImage('assets/images/start_bg.png'), fit: BoxFit.cover)
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFB9C4CC), Color(0xFF8A969E)],
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // 1) ภาพพื้นหลังยิม โหลดจากลิงก์ (ไม่ต้องใส่ไฟล์ในโปรเจกต์)
+          Image.network(
+            _bgUrl,
+            fit: BoxFit.cover,
+            // ระหว่างโหลดหรือโหลดไม่ได้ (ไม่มีเน็ต) จะแสดงพื้นสีเทาแทน
+            loadingBuilder: (context, child, progress) =>
+                progress == null ? child : Container(color: const Color(0xFF9AA5AD)),
+            errorBuilder: (_, __, ___) =>
+                Container(color: const Color(0xFF9AA5AD)),
           ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 48),
-                Container(width: 28, height: 4, color: AppColors.accent),
-                const SizedBox(height: 12),
-                const Text('OVER\nCISE.',
+          // 2) ฟิล์มสีเทาจาง ๆ ทับรูป เหมือนในดีไซน์ (ปรับความเข้มที่เลข 66)
+          Container(color: const Color(0x66B8B8B8)),
+          // 3) เนื้อหา
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 56),
+                  Container(width: 28, height: 4, color: AppColors.accent),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'OVER\nCISE.',
                     style: TextStyle(
-                        fontSize: 56,
-                        fontWeight: FontWeight.w900,
-                        height: 1.0,
-                        color: Colors.black)),
-                const Spacer(),
-                Center(
-                  child: SizedBox(
-                    width: 220,
-                    height: 48,
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF5B9BD5),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24)),
-                      ),
-                      onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const SignInScreen())),
-                      child: const Text('Get Started',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w800)),
+                      fontSize: 60,
+                      fontWeight: FontWeight.w900,
+                      height: 1.0,
+                      color: Colors.black,
+                      shadows: [
+                        Shadow(color: Color(0xFF3FA9F5), offset: Offset(3, 3)),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const Spacer(),
+                  Center(
+                    child: FractionallySizedBox(
+                      widthFactor: 0.74,
+                      child: SizedBox(
+                        height: 48,
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF5B9BD5),
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24)),
+                          ),
+                          onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (_) => const SignInScreen())),
+                          child: const Text('Get Started',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w800)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
